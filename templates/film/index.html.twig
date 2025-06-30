@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Liste</h1>
+
+        <table class="table table-hover table-borderless shadow-sm rounded">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for film in films %}
+                <tr>
+                    <td>{{ film.id }}</td>
+                    <td>{{ film.title }}</td>
+                    <td>
+                        <a href="{{ path('app_film_delete', {id: film.id}) }}" class="btn btn-outline-secondary">Supprimer</a>
+
+                        <a href="{{ path('app_film_show', {id: film.id}) }}" class="btn btn-sm btn-outline-primary">Voir</a>
+                        <a href="{{ path('app_film_edit', {id: film.id}) }}" class="btn btn-sm btn-outline-secondary">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Aucun élément trouvé.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_film_create') }}" class="btn btn-success">Créer un nouvel élément</a>
+    </div>
+{% endblock %}
+
