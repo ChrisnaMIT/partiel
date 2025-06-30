@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les salles{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Toutes les salles</h1>
+
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Numéro de la salle</th>
+                <th>Nombre de place</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for salle in salles %}
+                <tr>
+                    <td>{{ salle.id }}</td>
+                    <td>{{ salle.numbre }}</td>
+                    <td>{{ salle.capacity }}</td>
+                    <td>
+                        <a href="{{ path('app_salle_edit', {'id': salle.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        <a href="{{ path('app_salle_delete', {'id': salle.id}) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">Aucune salle enregistrée.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_salle_create') }}" class="btn btn-success mt-3">Créer une nouvelle salle</a>
+    </div>
+{% endblock %}

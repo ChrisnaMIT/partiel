@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les catégories{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Toutes les catégories</h1>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Catégorie</th>
+                <th>Film</th>
+                <th>Date de la séance</th>
+                <th>Heure de la séance</th>
+                <th>Salle</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for category in categories %}
+                <tr>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.title }}</td>
+                    <td>{{ category.seance.film.title }}</td>
+                    <td>{{ category.seance.date ? category.seance.date|date('d/m/Y') : 'Non définie' }}</td>
+                    <td>{{ category.seance.startTime ? category.seance.startTime|date('H:i') : 'Non définie' }}</td>
+                    <td>{{ category.seance.salle.numbre }}</td>
+                    <td>
+                        <a href="{{ path('app_category_show', {id: category.id}) }}" class="btn btn-sm btn-primary">Voir</a>
+                        <a href="{{ path('app_category_edit', {id: category.id}) }}" class="btn btn-sm btn-secondary">Modifier</a>
+                        <a href="{{ path('app_category_delete', {id: category.id}) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">Aucune catégorie enregistrée.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_category_create') }}" class="btn btn-success">Créer une nouvelle catégorie</a>
+    </div>
+{% endblock %}
+
+

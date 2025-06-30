@@ -1,0 +1,14 @@
+<h2>Choisissez vos places pour {{ seance.film.title }}</h2>
+<p>Salle {{ salle.number }} - {{ capacity }} places</p>
+
+<div class="salle-plan" style="display: flex; flex-wrap: wrap; width: 400px;">
+    {% for i in 1..capacity %}
+        <div class="seat" style="
+            width: 30px; height: 30px; margin: 2px; text-align: center;
+            line-height: 30px; border: 1px solid #ccc; cursor: pointer;">
+            {{ i }}
+        </div>
+    {% endfor %}
+</div>
+
+<button class="btn btn-primary mt-4">Valider ma sélection</button>
