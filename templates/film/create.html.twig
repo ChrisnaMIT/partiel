@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un film{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Créer un film</h1>
+
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary mb-4">Enregistrer le film</button>
+        {{ form_end(form) }}
+
+
+        <h2 class="mb-3">Ajouter une image au film</h2>
+        {{ form_start(imageForm) }}
+        {{ form_widget(imageForm) }}
+        <button class="btn btn-secondary">Ajouter l'image</button>
+        {{ form_end(imageForm) }}
+
+
+
+
+        <a href="{{ path('app_films') }}" class="btn btn-link mt-3">Retour à la liste</a>
+    </div>
+{% endblock %}
+
+
