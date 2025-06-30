@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('app_home') }}">🎬 Mon Cinéma</a>
+        <a class="navbar-brand" href="{{ path('app_home') }}">🎬 Terrine Bellecour</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
                 aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,19 +15,16 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="">Séances</a>
+                    <a class="nav-link" href="{{ path('app_seance') }}">Séances</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_category') }}">Catégories (VF/VOSTFR)</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="">Réservations</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="">Catégories (VF/VOSTFR)</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="">Salles</a>
+                    <a class="nav-link" href="{{ path('app_salle') }}">Salles</a>
                 </li>
 
             </ul>

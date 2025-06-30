@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la catégorie{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Détails de la catégorie</h1>
+
+        <dl class="row">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">{{ category.id }}</dd>
+
+            <dt class="col-sm-3">Nom</dt>
+            <dd class="col-sm-9">{{ category.title }}</dd>
+        </dl>
+
+        <a href="{{ path('app_category_edit', {id: category.id}) }}" class="btn btn-primary">Modifier</a>
+        <a href="{{ path('app_category_delete', {id: category.id}) }}" class="btn btn-danger">Supprimer</a>
+        <a href="{{ path('app_category') }}" class="btn btn-link">Retour à la liste</a>
+    </div>
+{% endblock %}

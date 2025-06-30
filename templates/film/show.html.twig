@@ -21,6 +21,8 @@
         </dl>
 
 
+
+
         {% if film.images|length > 0 %}
             <h2>Images du film</h2>
             <div class="row">
@@ -33,6 +35,46 @@
         {% else %}
             <p>Aucune image associée à ce film.</p>
         {% endif %}
+
+
+
+
+
+        {% if film.seances|length > 0 %}
+            <h2 class="mt-5">Séances programmées</h2>
+            <table class="table table-striped mt-3">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titre de la séance</th>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>Salle</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for seance in film.seances %}
+                    <tr>
+                        <td>{{ seance.id }}</td>
+                        <td>{{ seance.title }}</td>
+                        <td>{{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}</td>
+                        <td>{{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}</td>
+                        <td>{{ seance.salle ? seance.salle.numbre : 'Non définie' }}</td>
+                        <td>
+                            <a href="{{ path('app_reservation_select_seats', { id: seance.id }) }}" class="btn btn-success">Réserver</a>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="mt-4 text-muted">Aucune séance programmée pour ce film.</p>
+        {% endif %}
+
+
+
 
 
 

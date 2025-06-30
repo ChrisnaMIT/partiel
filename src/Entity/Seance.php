@@ -22,8 +22,6 @@ class Seance
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $time = null;
 
     #[ORM\Column]
     private ?\DateTime $startTime = null;
@@ -47,6 +45,9 @@ class Seance
      */
     #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'seance')]
     private Collection $categories;
+
+    #[ORM\Column]
+    private ?int $placeAvailable = null;
 
     public function __construct()
     {
@@ -83,17 +84,7 @@ class Seance
         return $this;
     }
 
-    public function getTime(): ?\DateTime
-    {
-        return $this->time;
-    }
 
-    public function setTime(\DateTime $time): static
-    {
-        $this->time = $time;
-
-        return $this;
-    }
 
     public function getStartTime(): ?\DateTime
     {
@@ -190,4 +181,29 @@ class Seance
 
         return $this;
     }
+
+    public function getPlaceAvailable(): ?int
+    {
+        return $this->placeAvailable;
+    }
+
+    public function setPlaceAvailable(int $placeAvailable): static
+    {
+        $this->placeAvailable = $placeAvailable;
+
+        return $this;
+    }
+
+
+    public function decreaseAvailablePlaces(int $quantity): void
+    {
+        if ($this->placeAvailable !== null && $this->placeAvailable >= $quantity) {
+            $this->placeAvailable -= $quantity;
+        } else {
+            throw new \LogicException('Nombre de places insuffisant pour la réservation.');
+        }
+    }
+
+
+
 }

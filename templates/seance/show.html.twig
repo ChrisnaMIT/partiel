@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la séance{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Détails de la séance</h1>
+
+        <dl class="row">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">{{ seance.id }}</dd>
+
+            <dt class="col-sm-3">Titre de la séance</dt>
+            <dd class="col-sm-9">{{ seance.title }}</dd>
+
+            <dt class="col-sm-3">Date</dt>
+            <dd class="col-sm-9">
+                {{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}
+            </dd>
+
+            <dt class="col-sm-3">Heure</dt>
+            <dd class="col-sm-9">
+                {{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}
+            </dd>
+
+            <dt class="col-sm-3">Places disponibles</dt>
+            <dd class="col-sm-9">
+                {{ seance.placeAvailable is not null ? seance.placeAvailable : 'Non défini' }}
+            </dd>
+
+            <dt class="col-sm-3">Catégorie</dt>
+            <dd class="col-sm-9">
+                {% if seance.categories is not empty %}
+                    <ul class="list-unstyled mb-0">
+                        {% for cat in seance.categories %}
+                            <li>{{ cat.title }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    Aucune catégorie associée
+                {% endif %}
+            </dd>
+
+
+            <dt class="col-sm-3">Film</dt>
+            <dd class="col-sm-9">
+                {{ seance.film ? seance.film.title : 'Aucun film associé' }}
+            </dd>
+
+
+            <dt class="col-sm-3">Salle</dt>
+            <dd class="col-sm-9">
+                {{ seance.salle ? seance.salle.numbre : 'Aucune salle associée' }}
+            </dd>
+        </dl>
+
+        <a href="{{ path('app_seance_edit', {id: seance.id}) }}" class="btn btn-primary">Modifier</a>
+        <a href="{{ path('app_seance_delete', {id: seance.id}) }}" class="btn btn-danger">Supprimer</a>
+        <a href="{{ path('app_seance') }}" class="btn btn-link">Retour à la liste</a>
+    </div>
+{% endblock %}
+

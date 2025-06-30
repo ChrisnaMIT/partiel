@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la séance{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Modifier la séance</h1>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary mt-3">Enregistrer les modifications</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_seance_show', {id: seance.id}) }}" class="btn btn-link mt-3">Retour aux détails</a>
+    </div>
+{% endblock %}

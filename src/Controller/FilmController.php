@@ -43,6 +43,8 @@ final class FilmController extends AbstractController
         if ($filmFormCreate->isSubmitted() && $filmFormCreate->isValid()) {
             $manager->persist($film);
             $manager->flush();
+
+
             return $this->redirectToRoute('app_films');
         }
         return $this->render('film/create.html.twig', [

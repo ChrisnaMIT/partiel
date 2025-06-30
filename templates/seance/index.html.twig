@@ -1,20 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SeanceController!{% endblock %}
+{% block title %}Séances{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="container my-5">
+        <h1 class="mb-4">Toutes les séances</h1>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre de la séance</th>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Film</th>
+                <th>Salle</th>
+                <th>Catégorie</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for seance in seances %}
+                <tr>
+                    <td>{{ seance.id }}</td>
+                    <td>{{ seance.title }}</td>
+                    <td>{{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}</td>
+                    <td>{{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}</td>
+                    <td>{{ seance.film.title }}</td>
+                    <td>{{ seance.salle ? seance.salle.numbre : 'Non définie' }}</td>
+                    <td>
+                        {% if seance.categories|length > 0 %}
+                            {% for category in seance.categories %}
+                                {{ category.title }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            Aucune
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_seance_show', {id: seance.id}) }}" class="btn btn-primary btn-sm">Voir</a>
+                        <a href="{{ path('app_seance_edit', {id: seance.id}) }}" class="btn btn-secondary btn-sm">Modifier</a>
+                        <a href="{{ path('app_seance_delete', {id: seance.id}) }}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Voulez-vous vraiment supprimer cette séance ?')">Supprimer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">Aucune séance enregistrée.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/mitchrisna/Documents/projetsSymfony/partiel/src/Controller/SeanceController.php</code></li>
-        <li>Your template at <code>/Users/mitchrisna/Documents/projetsSymfony/partiel/templates/seance/index.html.twig</code></li>
-    </ul>
-</div>
+        <a href="{{ path('app_seance_create') }}" class="btn btn-success mt-3">Créer une nouvelle séance</a>
+    </div>
 {% endblock %}
+
+

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la salle{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4">Modifier la salle : <strong>{{ salle.numbre}}</strong></h1>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-warning mt-3">Modifier</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_salle') }}" class="btn btn-link mt-3">Retour à la liste</a>
+    </div>
+{% endblock %}
