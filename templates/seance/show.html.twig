@@ -3,60 +3,59 @@
 {% block title %}Détails de la séance{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
-        <h1 class="mb-4">Détails de la séance</h1>
+    <div class="container my-5 d-flex justify-content-center">
+        <div class="w-100" style="max-width: 600px;">
+            <h1 class="mb-4 fs-1 fw-bold text-warning text-center"> Détails de la séance</h1>
 
-        <dl class="row">
-            <dt class="col-sm-3">ID</dt>
-            <dd class="col-sm-9">{{ seance.id }}</dd>
+            <div class="bg-white text-dark border rounded-4 shadow-sm p-4 mb-4">
+                <p class="mb-3">
+                    <span class="fw-bold text-warning">Titre :</span>
+                    {{ seance.title }}
+                </p>
 
-            <dt class="col-sm-3">Titre de la séance</dt>
-            <dd class="col-sm-9">{{ seance.title }}</dd>
+                <p class="mb-3">
+                    <span class="fw-bold text-warning">Date :</span>
+                    {{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}
+                </p>
 
-            <dt class="col-sm-3">Date</dt>
-            <dd class="col-sm-9">
-                {{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}
-            </dd>
+                <p class="mb-3">
+                    <span class="fw-bold text-warning">Heure :</span>
+                    {{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}
+                </p>
 
-            <dt class="col-sm-3">Heure</dt>
-            <dd class="col-sm-9">
-                {{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}
-            </dd>
+                <p class="mb-3">
+                    <span class="fw-bold text-warning">Places disponibles :</span>
+                    {{ seance.placeAvailable is not null ? seance.placeAvailable : 'Non défini' }}
+                </p>
 
-            <dt class="col-sm-3">Places disponibles</dt>
-            <dd class="col-sm-9">
-                {{ seance.placeAvailable is not null ? seance.placeAvailable : 'Non défini' }}
-            </dd>
+                <p class="mb-3">
+                    <span class="fw-bold text-warning">Catégorie :</span>
+                    {% if seance.category %}
+                        <span class="badge bg-warning text-dark">{{ seance.category.title }}</span>
+                    {% else %}
+                        <span class="text-muted">Aucune</span>
+                    {% endif %}
+                </p>
 
-            <dt class="col-sm-3">Catégorie</dt>
-            <dd class="col-sm-9">
-                {% if seance.categories is not empty %}
-                    <ul class="list-unstyled mb-0">
-                        {% for cat in seance.categories %}
-                            <li>{{ cat.title }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    Aucune catégorie associée
+                <p class="mb-3">
+                    <span class="fw-bold text-warning">Film :</span>
+                    {{ seance.film ? seance.film.title : 'Aucun film associé' }}
+                </p>
+
+                <p class="mb-0">
+                    <span class="fw-bold text-warning">Salle :</span>
+                    {{ seance.salle ? seance.salle.numbre : 'Aucune salle associée' }}
+                </p>
+            </div>
+
+            <div class="d-flex flex-column gap-3">
+                {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_seance_edit', {id: seance.id}) }}" class="btn btn-warning btn-lg rounded-pill fw-bold w-100">️ Modifier</a>
+                <a href="{{ path('app_seance_delete', {id: seance.id}) }}" class="btn btn-danger btn-lg rounded-pill fw-bold w-100"> Supprimer</a>
                 {% endif %}
-            </dd>
-
-
-            <dt class="col-sm-3">Film</dt>
-            <dd class="col-sm-9">
-                {{ seance.film ? seance.film.title : 'Aucun film associé' }}
-            </dd>
-
-
-            <dt class="col-sm-3">Salle</dt>
-            <dd class="col-sm-9">
-                {{ seance.salle ? seance.salle.numbre : 'Aucune salle associée' }}
-            </dd>
-        </dl>
-
-        <a href="{{ path('app_seance_edit', {id: seance.id}) }}" class="btn btn-primary">Modifier</a>
-        <a href="{{ path('app_seance_delete', {id: seance.id}) }}" class="btn btn-danger">Supprimer</a>
-        <a href="{{ path('app_seance') }}" class="btn btn-link">Retour à la liste</a>
+                <a href="{{ path('app_seance') }}" class="btn btn-outline-dark btn-lg rounded-pill fw-semibold w-100"> Retour à la liste</a>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

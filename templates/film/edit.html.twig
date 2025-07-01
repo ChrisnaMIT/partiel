@@ -3,20 +3,47 @@
 {% block title %}Modifier un film{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
-        <h1 class="mb-4">Modifier un film</h1>
+    <div class="container-fluid min-vh-100 bg-dark text-light p-5 pt-4">
+        <h1 class="mb-5 fs-1 fw-bold text-warning text-center"> Modifier un film</h1>
 
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary">Enregistrer</button>
-        {{ form_end(form) }}
+        <div class="mx-auto" style="max-width: 600px;">
+            {{ form_start(form) }}
 
-        <h2 class="mb-3">Ajouter une image au film</h2>
-        {{ form_start(imageForm) }}
-        {{ form_widget(imageForm) }}
-        <button class="btn btn-secondary">Ajouter l'image</button>
-        {{ form_end(imageForm) }}
+            {{ form_row(form.title, {
+                attr: { class: 'form-control bg-black bg-opacity-75 text-light border-secondary rounded-pill mb-3' },
+                label_attr: { class: 'fw-bold text-warning' }
+            }) }}
 
-        <a href="{{ path('app_films') }}" class="btn btn-link mt-3">Retour à la liste</a>
+            {{ form_row(form.duration, {
+                attr: { class: 'form-control bg-black bg-opacity-75 text-light border-secondary rounded-pill mb-3' },
+                label_attr: { class: 'fw-bold text-warning' }
+            }) }}
+
+            {{ form_row(form.description, {
+                attr: { class: 'form-control bg-black bg-opacity-75 text-light border-secondary rounded-4 mb-4' },
+                label_attr: { class: 'fw-bold text-warning' }
+            }) }}
+
+            <button class="btn btn-warning btn-lg rounded-pill fw-bold px-4 mb-5"> Enregistrer les modifications</button>
+
+            {{ form_end(form) }}
+
+            <h2 class="mt-5 mb-3 fs-3 fw-bold text-warning text-center"> Ajouter une image au film</h2>
+
+            {{ form_start(imageForm) }}
+
+            {{ form_row(imageForm.imageFile, {
+                attr: { class: 'form-control bg-black bg-opacity-75 text-light border-secondary rounded-pill mb-3' },
+                label_attr: { class: 'fw-bold text-warning' }
+            }) }}
+
+            <button class="btn btn-secondary btn-lg rounded-pill fw-bold px-4 mb-4">Ajouter l'image</button>
+
+            {{ form_end(imageForm) }}
+
+            <div class="d-flex justify-content-center mt-5">
+                <a href="{{ path('app_films') }}" class="btn btn-outline-light btn-lg rounded-pill fw-semibold px-4"> Retour à la liste</a>
+            </div>
+        </div>
     </div>
 {% endblock %}

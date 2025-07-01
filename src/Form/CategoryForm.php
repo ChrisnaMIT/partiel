@@ -17,12 +17,8 @@ class CategoryForm extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'label' => 'Titre de la catégorie',
-            ])
-            ->add('seance', EntityType::class, [
-                'class' => Seance::class,
-                'choice_label' => 'title',
-                'label' => 'Séance associée',
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

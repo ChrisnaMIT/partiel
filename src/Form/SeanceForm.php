@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Film;
 use App\Entity\Salle;
 use App\Entity\Seance;
@@ -18,6 +19,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\DataTransformer\StringToTimeTransformer;
 
 
+
+
 class SeanceForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -26,10 +29,16 @@ class SeanceForm extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'Titre de la séance',
             ])
+
             ->add('date', DateType::class, [
-                'label' => 'Date de la séance',
                 'widget' => 'single_text',
+                'html5' => true,
+                'attr' => [
+                    'placeholder' => 'Sélectionnez une date',
+                ],
+                'label' => '📅 Date de la séance',
             ])
+
             ->add('startTime', ChoiceType::class, [
                 'label' => 'Heure de la séance',
                 'choices' => [
@@ -50,11 +59,26 @@ class SeanceForm extends AbstractType
                 'choice_label' => 'title',
                 'label' => 'Film',
             ])
+
             ->add('salle', EntityType::class, [
                 'class' => Salle::class,
                 'choice_label' => 'numbre',
+                'label' => 'Title',
+            ])
+
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'title',
+                'label' => 'Catégorie',
+                'placeholder' => 'Choisissez une catégorie',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('salle', EntityType::class, [
+                'class' => Salle::class,
+                'choice_label' => 'name',
                 'label' => 'Salle',
             ])
+
             ->add('placeAvailable', ChoiceType::class, [
                 'label' => 'Nombre de places disponibles',
                 'choices' => [

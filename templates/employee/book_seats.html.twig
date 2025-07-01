@@ -5,54 +5,57 @@
 {% block body %}
     <h1 class="text-center text-warning mb-4">Réservation pour {{ seance.film.title }}</h1>
 
-    <div class="d-flex flex-wrap justify-content-center gap-2">
-        {% for seat in seats %}
-            <div class="seat {% if not seat.isAvailable %}reserved{% endif %}" data-seat-id="{{ seat.id }}">
-                {{ seat.number }}
+    <div class="d-flex flex-column align-items-center gap-2">
+        {% for row in seats|batch(16, '') %}
+            <div class="d-flex gap-1 justify-content-center">
+                {% for seat in row %}
+                    {% if seat %}
+                        {% set isReserved = seat.id in reservedSeatIds %}
+                        <div
+                            class="seat text-white fw-bold d-flex justify-content-center align-items-center"
+                            data-seat-id="{{ seat.id }}"
+                            data-disabled="{{ isReserved ? 'true' : 'false' }}"
+                            style="
+                                width:40px; height:40px; border-radius:5px;
+                                background-color: {{ isReserved ? '#dc3545' : '#6c757d' }};
+                                cursor: {{ isReserved ? 'not-allowed' : 'pointer' }};
+                                "
+                        >
+                            {{ seat.number }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
         {% endfor %}
     </div>
 
+
+
+
+
+
     <button class="btn btn-success mt-4 d-block mx-auto" id="confirm-reservation">Confirmer la réservation</button>
 
     <script>
-        const selectedSeats = new Set();
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.seat').forEach(seat => {
+                if (seat.dataset.disabled === "true") {
+                    return; // siège déjà réservé, pas cliquable
+                }
 
-        document.querySelectorAll('.seat').forEach(seat => {
-            if (!seat.classList.contains('reserved')) {
                 seat.addEventListener('click', () => {
-                    const seatId = seat.dataset.seatId;
-                    if (selectedSeats.has(seatId)) {
-                        selectedSeats.delete(seatId);
-                        seat.style.backgroundColor = '';
+                    const currentColor = seat.style.backgroundColor;
+
+                    if (currentColor === 'blue') {
+                        // Si déjà sélectionné (bleu), on désélectionne (gris)
+                        seat.style.backgroundColor = '#6c757d';
                     } else {
-                        selectedSeats.add(seatId);
-                        seat.style.backgroundColor = 'red';
+                        // Sinon, on sélectionne en bleu
+                        seat.style.backgroundColor = 'blue';
                     }
                 });
-            }
+            });
         });
 
-        document.getElementById('confirm-reservation').addEventListener('click', () => {
-            if (selectedSeats.size === 0) {
-                alert("Veuillez sélectionner au moins une place !");
-                return;
-            }
-
-            fetch('{{ path('employee_confirm_booking', { id: seance.id }) }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ seats: Array.from(selectedSeats) })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Réservation effectuée avec succès !');
-                        window.location.href = '{{ path('app_seance') }}';
-                    } else {
-                        alert('Erreur lors de la réservation.');
-                    }
-                });
-        });
     </script>
 {% endblock %}

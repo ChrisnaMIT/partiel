@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Salle;
+use App\Entity\Seat;
 use App\Form\SalleForm;
 use App\Repository\SalleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +33,17 @@ final class SalleController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->persist($salle);
+
+            for ($i = 1; $i <= $salle->getCapacity(); $i++) {
+                $seat = new Seat();
+                $seat->setNumber($i);
+                $seat->setIsAvailable(true);
+                $seat->setSalle($salle);
+                $manager->persist($seat);
+            }
+
+            $manager->flush();
+
             $manager->flush();
             return $this->redirectToRoute('app_salle');
         }

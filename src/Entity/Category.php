@@ -17,8 +17,10 @@ class Category
     #[ORM\Column(type: Types::TEXT)]
     private ?string $title = null;
 
-    #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
+    /**
+     * @ORM\ManyToOne(targetEntity=Seance::class, inversedBy="categories")
+     * @ORM\JoinColumn(nullable=true)
+     */
     private ?Seance $seance = null;
 
     public function getId(): ?int

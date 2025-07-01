@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Seance;
+use App\Entity\Seat;
 use App\Form\SeanceForm;
 use App\Repository\SeanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,28 +30,55 @@ final class SeanceController extends AbstractController
     public function createSeance(Request $request, EntityManagerInterface $manager): Response
     {
         $seance = new Seance();
-        $form = $this->createForm(SeanceForm::class , $seance);
+        $form = $this->createForm(SeanceForm::class, $seance);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $salle = $seance->getSalle();
+
+            if (!$salle) {
+                $this->addFlash('error', 'Salle invalide.');
+                return $this->redirectToRoute('app_seance_create');
+            }
+
+
+            $capacity = 45; //
+            if ($salle->getId() === 1) {
+                $capacity = 85;
+            }
+
+            for ($i = 1; $i <= $capacity; $i++) {
+                $seat = new Seat();
+                $seat->setNumber($i);
+                $seat->setReserved(false);
+                $seat->setSeance($seance);
+                $manager->persist($seat);
+            }
+
             $manager->persist($seance);
             $manager->flush();
+
+            $this->addFlash('success', "Séance créée avec ses $capacity sièges !");
+
             return $this->redirectToRoute('app_seance');
         }
+
         return $this->render('seance/create.html.twig', [
             'form' => $form->createView(),
-
         ]);
     }
+
 
 
     //-----------------------------------------------------------------------
 
 
     #[Route('/seance/{id}/show', name: 'app_seance_show')]
-    public function show(Seance $seance, EntityManagerInterface $manager): Response
+    public function show(Seance $seance, EntityManagerInterface $manager, Film $film): Response
     {
         return $this->render('seance/show.html.twig', [
             'seance' => $seance,
+            'films' => $film,
         ]);
     }
 

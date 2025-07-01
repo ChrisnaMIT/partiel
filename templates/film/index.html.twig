@@ -1,40 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste{% endblock %}
+{% block title %}Liste des Films{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
-        <h1 class="mb-4">Liste</h1>
+    <div class="container-fluid min-vh-100 bg-dark text-light p-5 pt-4 position-relative overflow-hidden">
+        <h1 class="mb-4 fs-1 fw-bold text-warning text-center"> Films à l'affiche</h1>
 
-        <table class="table table-hover table-borderless shadow-sm rounded">
-            <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Titre</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for film in films %}
-                <tr>
-                    <td>{{ film.id }}</td>
-                    <td>{{ film.title }}</td>
-                    <td>
-                        <a href="{{ path('app_film_delete', {id: film.id}) }}" class="btn btn-outline-secondary">Supprimer</a>
+        <div class="position-relative">
 
-                        <a href="{{ path('app_film_show', {id: film.id}) }}" class="btn btn-sm btn-outline-primary">Voir</a>
-                        <a href="{{ path('app_film_edit', {id: film.id}) }}" class="btn btn-sm btn-outline-secondary">Modifier</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="3" class="text-center text-muted">Aucun élément trouvé.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+            <div class="position-absolute top-50 start-0 translate-middle-y px-3 d-none d-md-block" style="z-index: 10;">
+                <span class="fs-1 text-secondary opacity-75">&#8592;</span>
+            </div>
 
-        <a href="{{ path('app_film_create') }}" class="btn btn-success">Créer un nouvel élément</a>
+            <div class="d-flex overflow-x-auto gap-4 pb-3 px-5">
+                {% for film in films %}
+                    <div class="card bg-black bg-opacity-75 text-light flex-shrink-0" style="width: 18rem; min-width: 18rem;">
+                        {% if film.images|length > 0 %}
+                            <img src="{{ asset('uploads/images/' ~ film.images[0].imageName) }}" alt="Affiche {{ film.title }}" class="card-img-top rounded-top" style="height: 250px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary d-flex align-items-center justify-content-center rounded-top" style="height: 250px;">
+                                <span class="text-dark fw-bold">Pas d'image</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <h5 class="card-title text-warning fw-bold">{{ film.title }}</h5>
+                            <div class="mt-auto d-flex flex-wrap gap-2">
+                                <a href="{{ path('app_film_show', {id: film.id}) }}" class="btn btn-sm btn-outline-warning rounded-pill fw-semibold">Voir</a>
+
+                                {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_film_delete', {id: film.id}) }}" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">Supprimer</a>
+                                <a href="{{ path('app_film_edit', {id: film.id}) }}" class="btn btn-sm btn-outline-light rounded-pill fw-semibold">Modifier</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-center text-secondary py-4">Aucun film trouvé.</p>
+                {% endfor %}
+            </div>
+
+            <div class="position-absolute top-50 end-0 translate-middle-y px-3 d-none d-md-block" style="z-index: 10;">
+                <span class="fs-1 text-secondary opacity-75">&#8594;</span>
+            </div>
+        </div>
+
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="d-flex justify-content-end mt-4 px-5">
+            <a href="{{ path('app_film_create') }}" class="btn btn-warning btn-lg rounded-pill fw-bold px-4">
+                 Créer un nouveau film
+            </a>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}
+
+
+
+
+
+
 

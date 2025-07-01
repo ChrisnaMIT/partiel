@@ -40,11 +40,14 @@ class Seance
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'seance')]
     private Collection $reservations;
 
-    /**
-     * @var Collection<int, Category>
-     */
-    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'seance')]
-    private Collection $categories;
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'seances')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Category $category = null;
+
+    #[ORM\OneToMany(mappedBy: 'seance', targetEntity: Seat::class, cascade: ['persist', 'remove'])]
+    private Collection $seats;
+
+
 
     #[ORM\Column]
     private ?int $placeAvailable = null;
@@ -53,6 +56,14 @@ class Seance
     {
         $this->reservations = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->seats = new ArrayCollection();
+
+    }
+
+
+    public function getSeats(): Collection
+    {
+        return $this->seats;
     }
 
     public function getId(): ?int
@@ -152,13 +163,19 @@ class Seance
         return $this;
     }
 
-    /**
-     * @return Collection<int, Category>
-     */
-    public function getCategories(): Collection
+
+
+    public function getCategory(): ?Category
     {
-        return $this->categories;
+        return $this->category;
     }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+        return $this;
+    }
+
 
     public function addCategory(Category $category): static
     {

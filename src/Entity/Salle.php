@@ -27,14 +27,30 @@ class Salle
     #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'salle')]
     private Collection $seances;
 
+    #[ORM\OneToMany(mappedBy: 'salle', targetEntity: Seat::class, orphanRemoval: true)]
+    private Collection $seats;
+
+
     public function __construct()
     {
         $this->seances = new ArrayCollection();
+        $this->seats = new ArrayCollection();
+
+    }
+
+    public function getSeats(): Collection
+    {
+        return $this->seats;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return 'Salle ' . $this->numbre;
     }
 
     public function getNumbre(): ?string
@@ -91,3 +107,4 @@ class Salle
         return $this;
     }
 }
+

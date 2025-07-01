@@ -27,6 +27,10 @@ class Film
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $image = null;
+
+
     /**
      * @var Collection<int, Seance>
      */
@@ -48,10 +52,22 @@ class Film
         $this->images = new ArrayCollection();
     }
 
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+        return $this;
+    }
+
     public function getImages(): Collection
     {
         return $this->images;
     }
+
 
 
 

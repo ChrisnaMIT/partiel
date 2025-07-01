@@ -60,4 +60,44 @@ final class AdminController extends AbstractController
         }
         return $this->redirectToRoute('app_admin');
     }
+
+    //---------------------------------------------------------------
+
+
+    #[Route('promote/employer/{id}', name: 'app_promote_employer')]
+    public function promoteEmployer(User $user, EntityManagerInterface $manager): Response
+    {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé');
+        }
+
+
+        if(!in_array('ROLE_EMPLOYER', $user->getRoles())){
+            $user->setRoles(['ROLE_EMPLOYER']);
+            $manager->persist($user);
+            $manager->flush();
+        }
+        return $this->redirectToRoute('app_admin');
+    }
+
+
+    //---------------------------------------------------------------
+
+
+    #[Route('demote/employer/{id}', name: 'app_demote_employer')]
+    public function demoteEmployer(User $user, EntityManagerInterface $manager): Response
+    {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé');
+        }
+
+
+        if(in_array('ROLE_EMPLOYER', $user->getRoles())){
+            $user->setRoles([]);
+            $manager->persist($user);
+            $manager->flush();
+        }
+        return $this->redirectToRoute('app_admin');
+    }
+
 }

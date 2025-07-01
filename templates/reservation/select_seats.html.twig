@@ -1,60 +1,119 @@
-<h2>Choisissez vos places pour {{ seance.film.title }}</h2>
-<p>Salle {{ salle.id }} - {{ capacity }} places</p>
+{% extends 'base.html.twig' %}
 
-<style>
-    .salle-plan {
-        display: flex;
-        flex-wrap: wrap;
-        width: 400px;
-    }
-    .seat {
-        width: 30px;
-        height: 30px;
-        margin: 2px;
-        text-align: center;
-        line-height: 30px;
-        border: 1px solid #ccc;
-        cursor: pointer;
-        user-select: none;
-        background-color: #f8f9fa;
-        transition: background-color 0.2s;
-    }
-    .seat.selected {
-        background-color: #007bff;
-        color: white;
-    }
-</style>
+{% block body %}
+    <div class="w-100 min-vh-100 d-flex flex-column align-items-center justify-content-center bg-dark text-light py-5">
+        <div class="text-center" style="max-width: 800px;">
+            <h1 class="fw-bold mb-4 text-warning">{{ seance.film.title }}</h1>
 
-<div class="salle-plan">
-    {% for i in 1..capacity %}
-        <div class="seat" data-seat="{{ i }}">{{ i }}</div>
-    {% endfor %}
-</div>
-<h1>Chaque place est à 7,50€</h1>
+            {% if seance.film.images|length > 0 %}
+                <img src="{{ asset('uploads/images/' ~ seance.film.images.first.imageName) }}" alt="{{ seance.film.title }}" class="rounded shadow mb-4" style="max-width: 300px;">
+            {% endif %}
 
-<button class="btn btn-primary mt-4" onclick="validateSelection()">Valider ma sélection</button>
-<a href="{{ path('app_films') }}" class="btn btn-outline-primary mt-4">Retour à la liste</a>
+            <p class="fs-5 mb-1"><strong>Durée :</strong> {{ seance.film.duration }} minutes</p>
+            <br>
+            <p class="fs-5 mb-4 text-justify"><strong>Description :</strong> {{ seance.film.description }}</p>
 
-<script>
-    const seats = document.querySelectorAll('.seat');
-    seats.forEach(seat => {
-        seat.addEventListener('click', () => {
-            seat.classList.toggle('selected');
-        });
-    });
+            <h3 class="mb-2"><i class="bi bi-ticket-perforated-fill text-danger"></i> Choisissez vos places</h3>
+            <p class="mb-4">Salle {{ salle.id }} - {{ capacity }} places</p>
 
-    function validateSelection() {
-        const selectedSeats = Array.from(document.querySelectorAll('.seat.selected'))
-            .map(seat => seat.dataset.seat);
+            <div class="bg-light w-100 rounded py-1 mb-4" style="box-shadow: 0 0 20px rgba(255,255,255,0.3);">
+                <p class="fw-bold text-dark mb-0">Écran</p>
+            </div>
 
-        if (selectedSeats.length === 0) {
-            alert("Veuillez sélectionner au moins une place !");
-            return;
-        }
+            <div class="d-flex flex-wrap justify-content-center">
+                {% for seat in seats %}
 
-        alert("Vous avez sélectionné les places : " + selectedSeats.join(", "));
+                    <div class="seat
+                    {{ seat.reserved ? 'bg-danger' : 'bg-secondary' }}
+                    text-light d-flex align-items-center justify-content-center m-1 rounded"
+                         data-seat="{{ seat.number }}"
+                         style="width: 40px; height: 40px; cursor: {{ seat.reserved ? 'not-allowed' : 'pointer' }}; user-select: none; transition: 0.2s;"
+                         {% if seat.reserved %}data-disabled="true"{% endif %}>
+                        {{ seat.number }}
+                    </div>
+                {% endfor %}
+            </div>
 
-        // Ici tu pourrais envoyer selectedSeats en AJAX ou via un formulaire caché.
-    }
-</script>
+
+            <p class="mt-4 fs-5"><i class="bi bi-cash-coin"></i> Chaque place est à 7,50€</p>
+
+            <div class="d-flex gap-3 mt-3 justify-content-center">
+                <div class="d-flex gap-3 mt-3 justify-content-center">
+                    <button class="btn btn-success" onclick="validateSelection()">Valider ma sélection</button>
+                    <a href="{{ path('app_films') }}" class="btn btn-outline-light">Retour à la liste</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+
+        <script>
+            const seanceId = {{ seance.id }};
+
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.seat').forEach(seat => {
+                    seat.addEventListener('click', () => {
+                        if (seat.dataset.disabled === "true") {
+                            return;
+                        }
+
+                        if (seat.classList.contains('bg-secondary')) {
+                            seat.classList.remove('bg-secondary');
+                            seat.classList.add('bg-primary');
+                        } else {
+                            seat.classList.remove('bg-primary');
+                            seat.classList.add('bg-secondary');
+                        }
+                    });
+                });
+
+                window.validateSelection = function() {
+                    const selectedSeats = Array.from(document.querySelectorAll('.seat.bg-primary'))
+                        .map(seat => seat.dataset.seat);
+
+                    if (selectedSeats.length === 0) {
+                        alert("Veuillez sélectionner au moins une place !");
+                        return;
+                    }
+
+                    fetch('/reservation/validate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify({
+                            seats: selectedSeats,
+                            seanceId: seanceId
+                        }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.href = data.redirectUrl;
+                            } else {
+                                alert(data.message || "Une erreur est survenue !");
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert("Erreur lors de la réservation !");
+                        });
+                };
+            });
+        </script>
+
+
+{% endblock %}
+
+
+
+
+
 

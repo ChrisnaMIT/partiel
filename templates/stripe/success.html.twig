@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement réussi{% endblock %}
+
+{% block body %}
+    <div class="min-vh-100 d-flex flex-column justify-content-center align-items-center bg-dark text-white text-center">
+        <h1 class="text-success mb-4"><i class="bi bi-check-circle-fill"></i> Paiement réussi !</h1>
+        <p class="lead mb-4">Merci pour votre achat, votre réservation a été confirmée.</p>
+        <a href="{{ path('app_films') }}" class="btn btn-outline-light">Retour à l'accueil</a>
+    </div>
+{% endblock %}

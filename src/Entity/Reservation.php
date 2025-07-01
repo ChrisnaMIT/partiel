@@ -13,8 +13,9 @@ class Reservation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $seats = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $seats = null;
+
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -32,17 +33,18 @@ class Reservation
         return $this->id;
     }
 
-    public function getSeats(): ?int
+    public function setSeats(array $seats): static
     {
-        return $this->seats;
-    }
-
-    public function setSeats(int $seats): static
-    {
-        $this->seats = $seats;
-
+        $this->seats = implode(',', $seats);
         return $this;
     }
+
+    public function getSeats(): array
+    {
+        return explode(',', $this->seats ?? '');
+    }
+
+
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

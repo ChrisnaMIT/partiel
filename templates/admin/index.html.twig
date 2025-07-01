@@ -1,45 +1,54 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des utilisateurs{% endblock %}
-
 {% block body %}
-    <div class="container my-5">
-        <h1 class="mb-4">Gestion des utilisateurs</h1>
+    <div class="min-h-screen bg-gray-100 p-6">
+        <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Tous les utilisateurs</h1>
 
-        {% for user in users %}
-            <div class="card mb-3 shadow-sm p-3" style="border-left: 5px solid {% if 'ROLE_ADMIN' in user.roles %}green{% else %}gray{% endif %};">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1">{{ user.email }}</h5>
-                        <p class="mb-0 text-muted">
-                            Rôles :
-                            {% if user.roles is not empty %}
-                                {{ user.roles|join(', ') }}
-                            {% else %}
-                                Aucun rôle
+            {% for user in users %}
+                <div class="bg-blue-50 rounded-xl p-4 mb-4 shadow-sm">
+                    <div class="text-sm font-medium text-gray-600 mb-2">
+                        {% for role in user.roles %}
+                            {% if role == 'ROLE_USER' %}
+                                <span class="text-blue-700">User</span>
+                            {% elseif role == 'ROLE_ADMIN' %}
+                                <span class="text-red-600">Admin</span>
+                            {% elseif role == 'ROLE_EMPLOYER' %}
+                                <span class="text-green-600">Employer</span>
                             {% endif %}
-                        </p>
+                        {% endfor %}
                     </div>
-                    <div class="text-end">
-                        {% if 'ROLE_ADMIN' in user.roles %}
-                            <a href="{{ path('app_demote_admin', {id: user.id}) }}"
-                               class="btn btn-sm btn-danger"
-                               onclick="return confirm('Voulez-vous vraiment rétrograder cet utilisateur ?')">
-                                Rétrograder
-                            </a>
-                        {% else %}
-                            <a href="{{ path('app_promote_admin', {id: user.id}) }}"
-                               class="btn btn-sm btn-success"
-                               onclick="return confirm('Voulez-vous vraiment promouvoir cet utilisateur en admin ?')">
-                                Promouvoir
-                            </a>
-                        {% endif %}
+
+                    {% if user == app.user %}
+                        <p class="text-xs text-purple-600 font-semibold">C'est toi</p>
+                    {% endif %}
+
+                    <p class="text-gray-700 font-semibold">C'est moi : {{ user.email }}</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
+                        <form method="post" action="{{ path('app_promote_admin', {id: user.id}) }}">
+                            <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Promote Admin</button>
+                        </form>
+                        <form method="post" action="{{ path('app_demote_admin', {id: user.id}) }}">
+                            <button type="submit" class="w-full bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200 transition">Demote Admin</button>
+                        </form>
+
+                        <form method="post" action="{{ path('app_promote_employer', {id: user.id}) }}">
+                            <button type="submit" class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Promote Employer</button>
+                        </form>
+                        <form method="post" action="{{ path('app_demote_employer', {id: user.id}) }}">
+                            <button type="submit" class="w-full bg-green-100 text-green-700 px-4 py-2 rounded hover:bg-green-200 transition">Demote Employer</button>
+                        </form>
                     </div>
                 </div>
+            {% else %}
+                <p class="text-center text-gray-500">Aucun utilisateur trouvé.</p>
+            {% endfor %}
+
+            <div class="text-center mt-6">
+                <a href="{{ path('app_admin') }}" class="inline-block bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition">Retour</a>
             </div>
-        {% else %}
-            <p class="text-muted text-center">Aucun utilisateur trouvé.</p>
-        {% endfor %}
+        </div>
     </div>
 {% endblock %}
 

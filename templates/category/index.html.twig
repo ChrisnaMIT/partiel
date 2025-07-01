@@ -11,11 +11,6 @@
             <tr>
                 <th>ID</th>
                 <th>Catégorie</th>
-                <th>Film</th>
-                <th>Date de la séance</th>
-                <th>Heure de la séance</th>
-                <th>Salle</th>
-                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -23,10 +18,16 @@
                 <tr>
                     <td>{{ category.id }}</td>
                     <td>{{ category.title }}</td>
-                    <td>{{ category.seance.film.title }}</td>
-                    <td>{{ category.seance.date ? category.seance.date|date('d/m/Y') : 'Non définie' }}</td>
-                    <td>{{ category.seance.startTime ? category.seance.startTime|date('H:i') : 'Non définie' }}</td>
-                    <td>{{ category.seance.salle.numbre }}</td>
+
+                    {% if category.seance %}
+                        <span class="badge bg-secondary">{{ category.seance.title }}</span>
+                    {% else %}
+
+                    {% endif %}
+
+
+
+
                     <td>
                         <a href="{{ path('app_category_show', {id: category.id}) }}" class="btn btn-sm btn-primary">Voir</a>
                         <a href="{{ path('app_category_edit', {id: category.id}) }}" class="btn btn-sm btn-secondary">Modifier</a>

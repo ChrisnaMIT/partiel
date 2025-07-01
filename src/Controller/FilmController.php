@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class FilmController extends AbstractController
 {
 
-    #[Route('/film', name: 'app_films')]
+    #[Route('/', name: 'app_films')]
     public function index(FilmRepository $filmRepository): Response
     {
         return $this->render('film/index.html.twig', [
@@ -43,10 +43,27 @@ final class FilmController extends AbstractController
         if ($filmFormCreate->isSubmitted() && $filmFormCreate->isValid()) {
             $manager->persist($film);
             $manager->flush();
-
-
             return $this->redirectToRoute('app_films');
         }
+
+
+        if ($imageForm->isSubmitted() && $imageForm->isValid()) {
+            if (!$film->getId()) {
+                $this->addFlash('warning', 'Vous devez d’abord enregistrer le film avant d’ajouter une image.');
+                return $this->redirectToRoute('app_film_create');
+            }
+
+            $image->setFilm($film);
+
+            $manager->persist($image);
+            $manager->flush();
+
+            $this->addFlash('success', 'Image ajoutée avec succès !');
+
+            return $this->redirectToRoute('app_film_edit', ['id' => $film->getId()]);
+        }
+
+
         return $this->render('film/create.html.twig', [
             'film' => $film,
             'form' => $filmFormCreate->createView(),
@@ -59,8 +76,19 @@ final class FilmController extends AbstractController
 
 
     #[Route('/film/show/{id}', name: 'app_film_show')]
-    public function showFilm(Film $film): Response
+    public function showFilm(Film $film, EntityManagerInterface $manager): Response
     {
+        $film = $manager->getRepository(Film::class)->createQueryBuilder('f')
+            ->leftJoin('f.seances', 's')
+            ->addSelect('s')
+            ->where('f.id = :id')
+            ->setParameter('id', $film->getId())
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$film) {
+            throw $this->createNotFoundException('Film introuvable.');
+        }
         return $this->render('film/show.html.twig', [
             'film' => $film,
         ]);
@@ -72,23 +100,34 @@ final class FilmController extends AbstractController
     #[Route('/film/{id}/edit', name: 'app_film_edit')]
     public function editFilm(Request $request, Film $film, EntityManagerInterface $manager): Response
     {
+        $form = $this->createForm(FilmForm::class, $film);
+        $form->handleRequest($request);
+
+
         $image = new Image();
         $imageForm = $this->createForm(ImageForm::class, $image);
         $imageForm->handleRequest($request);
 
-        $filmFormEdit = $this ->createForm(FilmForm::class , $film);
-        $filmFormEdit->handleRequest($request);
-        if ($filmFormEdit->isSubmitted() && $filmFormEdit->isValid()) {
-            $manager->persist($film);
+        if ($form->isSubmitted() && $form->isValid()) {
             $manager->flush();
+            $this->addFlash('success', 'Film mis à jour !');
             return $this->redirectToRoute('app_films');
         }
+
+        if ($imageForm->isSubmitted() && $imageForm->isValid()) {
+            $image->setFilm($film);
+            $manager->persist($image);
+            $manager->flush();
+            $this->addFlash('success', 'Image ajoutée au film !');
+            return $this->redirectToRoute('app_film_edit', ['id' => $film->getId()]);
+        }
+
         return $this->render('film/edit.html.twig', [
-            'film' => $film,
-            'form' => $filmFormEdit->createView(),
+            'form' => $form->createView(),
             'imageForm' => $imageForm->createView(),
         ]);
     }
+
 
     //-----------------------------------------------------------------
 
@@ -101,6 +140,12 @@ final class FilmController extends AbstractController
             foreach ($film->getImages() as $image){
                 $manager->remove($image);
             }
+
+            foreach ($film->getSeances() as $seance) {
+                $manager->remove($seance);
+            }
+
+
         }
         $manager->remove($film);
         $manager->flush();

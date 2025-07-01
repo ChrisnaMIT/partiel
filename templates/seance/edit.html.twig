@@ -3,14 +3,71 @@
 {% block title %}Modifier la séance{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
-        <h1 class="mb-4">Modifier la séance</h1>
+    <div class="container my-5 d-flex justify-content-center">
+        <div class="w-100" style="max-width: 600px;">
+            <h1 class="mb-4 fs-1 fw-bold text-warning text-center"> Modifier la séance</h1>
 
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary mt-3">Enregistrer les modifications</button>
-        {{ form_end(form) }}
+            {{ form_start(form) }}
 
-        <a href="{{ path('app_seance_show', {id: seance.id}) }}" class="btn btn-link mt-3">Retour aux détails</a>
+            <div class="mb-3">
+                {{ form_row(form.title, {
+                    attr: { class: 'form-control bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.date, {
+                    attr: { class: 'form-control bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.startTime, {
+                    attr: { class: 'form-control bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.film, {
+                    attr: { class: 'form-select bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.salle, {
+                    attr: { class: 'form-select bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.category, {
+                    attr: { class: 'form-select bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_row(form.placeAvailable, {
+                    attr: { class: 'form-select bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+
+            <button class="btn btn-warning btn-lg rounded-pill fw-bold w-100 mb-4"> Enregistrer les modifications</button>
+
+            {{ form_end(form) }}
+
+            <div class="text-center">
+                <a href="{{ path('app_seance_show', {id: seance.id}) }}" class="btn btn-outline-dark btn-lg rounded-pill fw-semibold px-4">
+                     Retour aux détails
+                </a>
+            </div>
+        </div>
     </div>
 {% endblock %}
+

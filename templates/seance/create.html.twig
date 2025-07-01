@@ -3,14 +3,58 @@
 {% block title %}Créer une séance{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
-        <h1 class="mb-4">Créer une nouvelle séance</h1>
+    <div class="container-fluid min-vh-100 p-5 pt-4 d-flex justify-content-center" style="background-color: #f8f9fa; color: #212529;">
+        <div class="w-100" style="max-width: 600px;">
+            <h1 class="mb-4 fs-1 fw-bold text-warning text-center"> Créer une nouvelle séance</h1>
 
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-success mt-3">Enregistrer</button>
-        {{ form_end(form) }}
+            {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_row(form.title, {
+                    attr: { class: 'form-control bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.date, {
+                    attr: { class: 'form-control bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.startTime, {
+                    attr: { class: 'form-control bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.film, {
+                    attr: { class: 'form-select bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.salle, {
+                    attr: { class: 'form-select bg-white text-dark border-secondary rounded-pill' },
+                    label_attr: { class: 'fw-bold text-warning' }
+                }) }}
+            </div>
+            <div class="mb-4">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button type="submit" class="btn btn-success mt-3">Enregistrer</button>
+                {{ form_end(form) }}
+            </div>
 
-        <a href="{{ path('app_seance') }}" class="btn btn-link mt-3">Retour à la liste</a>
+            <button class="btn btn-warning btn-lg rounded-pill fw-bold w-100 mb-4"> Enregistrer la séance</button>
+            {{ form_end(form) }}
+
+            <div class="text-center">
+                <a href="{{ path('app_seance') }}" class="btn btn-outline-dark btn-lg rounded-pill fw-semibold px-4">
+                     Retour à la liste
+                </a>
+            </div>
+        </div>
     </div>
 {% endblock %}
+
+
