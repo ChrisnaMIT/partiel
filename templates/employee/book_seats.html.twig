@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation au guichet{% endblock %}
+
+{% block body %}
+    <h1 class="text-center text-warning mb-4">Réservation pour {{ seance.film.title }}</h1>
+
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        {% for seat in seats %}
+            <div class="seat {% if not seat.isAvailable %}reserved{% endif %}" data-seat-id="{{ seat.id }}">
+                {{ seat.number }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <button class="btn btn-success mt-4 d-block mx-auto" id="confirm-reservation">Confirmer la réservation</button>
+
+    <script>
+        const selectedSeats = new Set();
+
+        document.querySelectorAll('.seat').forEach(seat => {
+            if (!seat.classList.contains('reserved')) {
+                seat.addEventListener('click', () => {
+                    const seatId = seat.dataset.seatId;
+                    if (selectedSeats.has(seatId)) {
+                        selectedSeats.delete(seatId);
+                        seat.style.backgroundColor = '';
+                    } else {
+                        selectedSeats.add(seatId);
+                        seat.style.backgroundColor = 'red';
+                    }
+                });
+            }
+        });
+
+        document.getElementById('confirm-reservation').addEventListener('click', () => {
+            if (selectedSeats.size === 0) {
+                alert("Veuillez sélectionner au moins une place !");
+                return;
+            }
+
+            fetch('{{ path('employee_confirm_booking', { id: seance.id }) }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seats: Array.from(selectedSeats) })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Réservation effectuée avec succès !');
+                        window.location.href = '{{ path('app_seance') }}';
+                    } else {
+                        alert('Erreur lors de la réservation.');
+                    }
+                });
+        });
+    </script>
+{% endblock %}
