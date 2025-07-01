@@ -109,10 +109,22 @@ final class SeanceController extends AbstractController
     #[Route('/seance/{id}/delete', name: 'app_seance_delete')]
     public function deleteSeance(Request $request, EntityManagerInterface $manager, Seance $seance): Response
     {
-        $manager->remove($seance);
-        $manager->flush();
-        return $this->redirectToRoute('app_seance');
+        if ($seance) {
+            foreach ($seance->getReservations() as $reservation) {
+                $reservation->setSeance(null);
+                $manager->remove($reservation);
+            }
+
+            $manager->remove($seance);
+            $manager->flush();
+
+            return $this->redirectToRoute('app_seance');
+        }
+
+        throw $this->createNotFoundException('Séance non trouvée.');
     }
+
+
 
 
 

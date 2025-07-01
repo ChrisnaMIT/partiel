@@ -20,6 +20,9 @@ class Seat
     #[ORM\Column(type: 'boolean')]
     private bool $reserved = false;
 
+    #[ORM\ManyToOne(targetEntity: Seance::class, inversedBy: 'seats')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Seance $seance = null;
 
 
     #[ORM\ManyToOne(targetEntity: Salle::class, inversedBy: 'seats')]
@@ -28,6 +31,17 @@ class Seat
 
     #[ORM\Column(type: 'boolean')]
     private bool $isAvailable = true;
+
+    public function getSeance(): ?Seance
+    {
+        return $this->seance;
+    }
+
+    public function setSeance(?Seance $seance): static
+    {
+        $this->seance = $seance;
+        return $this;
+    }
 
     public function isAvailable(): bool
     {
@@ -78,14 +92,5 @@ class Seat
         return $this;
     }
 
-    public function getSeance(): ?Seance
-    {
-        return $this->seance;
-    }
 
-    public function setSeance(?Seance $seance): self
-    {
-        $this->seance = $seance;
-        return $this;
-    }
 }
