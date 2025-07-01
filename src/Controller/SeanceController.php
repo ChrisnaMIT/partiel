@@ -123,6 +123,7 @@ final class SeanceController extends AbstractController
 
         throw $this->createNotFoundException('Séance non trouvée.');
     }
+    //test
 
 
 
