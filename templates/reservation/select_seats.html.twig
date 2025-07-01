@@ -22,17 +22,18 @@
 
             <div class="d-flex flex-wrap justify-content-center">
                 {% for seat in seats %}
-
+                    {% set isReserved = seat.id in reservedSeatIds %}
                     <div class="seat
-                    {{ seat.reserved ? 'bg-danger' : 'bg-secondary' }}
-                    text-light d-flex align-items-center justify-content-center m-1 rounded"
+            {{ isReserved ? 'bg-danger' : 'bg-secondary' }}
+            text-light d-flex align-items-center justify-content-center m-1 rounded"
                          data-seat="{{ seat.number }}"
-                         style="width: 40px; height: 40px; cursor: {{ seat.reserved ? 'not-allowed' : 'pointer' }}; user-select: none; transition: 0.2s;"
-                         {% if seat.reserved %}data-disabled="true"{% endif %}>
+                         style="width: 40px; height: 40px; cursor: {{ isReserved ? 'not-allowed' : 'pointer' }}; user-select: none; transition: 0.2s;"
+                         {% if isReserved %}data-disabled="true"{% endif %}>
                         {{ seat.number }}
                     </div>
                 {% endfor %}
             </div>
+
 
 
             <p class="mt-4 fs-5"><i class="bi bi-cash-coin"></i> Chaque place est à 7,50€</p>
