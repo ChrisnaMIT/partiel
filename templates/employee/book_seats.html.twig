@@ -27,34 +27,53 @@
                 {% endfor %}
             </div>
         {% endfor %}
+        <button class="btn btn-success mt-4 d-block mx-auto" id="confirm-reservation">Confirmer la réservation</button>
     </div>
 
 
-
-
-
-
-    <button class="btn btn-success mt-4 d-block mx-auto" id="confirm-reservation">Confirmer la réservation</button>
-
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.seat').forEach(seat => {
-                if (seat.dataset.disabled === "true") {
-                    return; // siège déjà réservé, pas cliquable
-                }
-
+        document.querySelectorAll('.seat').forEach(seat => {
+            if (seat.dataset.disabled === 'false') {
                 seat.addEventListener('click', () => {
-                    const currentColor = seat.style.backgroundColor;
+                    if (seat.style.backgroundColor === 'blue') {
 
-                    if (currentColor === 'blue') {
-                        // Si déjà sélectionné (bleu), on désélectionne (gris)
                         seat.style.backgroundColor = '#6c757d';
                     } else {
-                        // Sinon, on sélectionne en bleu
+
                         seat.style.backgroundColor = 'blue';
                     }
                 });
-            });
+            }
+        });
+
+        document.getElementById('confirm-reservation').addEventListener('click', () => {
+            const selectedSeats = Array.from(document.querySelectorAll('.seat'))
+                .filter(seat => seat.style.backgroundColor === 'blue')
+                .map(seat => seat.dataset.seatId);
+
+            if (selectedSeats.length === 0) {
+                alert("Veuillez sélectionner au moins une place !");
+                return;
+            }
+
+            fetch('{{ path("employee_confirm_booking", {id: seance.id}) }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seats: selectedSeats }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Réservation confirmée !");
+                        window.location.reload();
+                    } else {
+                        alert(data.message || "Erreur lors de la réservation.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Erreur");
+                });
         });
 
     </script>

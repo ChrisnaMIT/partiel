@@ -59,13 +59,14 @@ final class ReservationController extends AbstractController
             if (!$seat) {
                 return new JsonResponse(['success' => false, 'message' => "Le siège $seatNumber n'existe pas."], 400);
             }
-            if ($seat->isReserved()) {
-                return new JsonResponse(['success' => false, 'message' => "Le siège $seatNumber est déjà réservé."], 400);
+            if ($seat->isReserved() || !$seat->isAvailable()) {
+                return new JsonResponse(['success' => false, 'message' => "Le siège $seatNumber est déjà réservé ou pris par un employé."], 400);
             }
 
             $seat->setReserved(true);
             $manager->persist($seat);
         }
+
 
         $reservation = new Reservation();
         $reservation->setReservationUser($user);
@@ -90,21 +91,47 @@ final class ReservationController extends AbstractController
     //-----------------------------------------------------------------------
 
     #[Route('/reservation/{id}', name: 'app_reservation_select_seats')]
-    public function selectSeats(Seance $seance): Response
+    public function selectSeats(Seance $seance, EntityManagerInterface $manager): Response
     {
+        $salle = $seance->getSalle();
 
-        $seats = $seance->getSalle()->getSeats()->toArray();
 
+        $seats = $salle->getSeats()->toArray();
         usort($seats, fn($a, $b) => $a->getNumber() <=> $b->getNumber());
 
+
+        $reservedSeatsEmployee = $manager->getRepository(\App\Entity\Seat::class)->findBy([
+            'salle' => $salle,
+            'isAvailable' => false,
+        ]);
+        $reservedSeatIds = array_map(fn($seat) => $seat->getId(), $reservedSeatsEmployee);
+
+
+        foreach ($seance->getReservations() as $reservation) {
+            foreach ($reservation->getSeats() as $seatNumber) {
+                $seat = $manager->getRepository(\App\Entity\Seat::class)->findOneBy([
+                    'salle' => $salle,
+                    'number' => $seatNumber,
+                ]);
+                if ($seat) {
+                    $reservedSeatIds[] = $seat->getId();
+                }
+            }
+        }
+
+
+        $reservedSeatIds = array_unique($reservedSeatIds);
 
         return $this->render('reservation/select_seats.html.twig', [
             'seance' => $seance,
             'seats' => $seats,
-            'salle' => $seance->getSalle(),
+            'salle' => $salle,
             'capacity' => count($seats),
+            'reservedSeatIds' => $reservedSeatIds,
         ]);
     }
+
+
 
 
 
