@@ -34,8 +34,9 @@ class Film
     /**
      * @var Collection<int, Seance>
      */
-    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'film')]
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'film', cascade: ['remove'], orphanRemoval: true)]
     private Collection $seances;
+
 
 
     /**

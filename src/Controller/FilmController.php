@@ -135,22 +135,34 @@ final class FilmController extends AbstractController
     #[Route('/film/{id}/delete', name: 'app_film_delete')]
     public function deleteFilm(Request $request, Film $film, EntityManagerInterface $manager): Response
     {
+        if ($film) {
 
-        if ($film){
-            foreach ($film->getImages() as $image){
-                $manager->remove($image);
+            $seances = $film->getSeances();
+            if ($seances) {
+                foreach ($seances as $seance) {
+                    if (!$seance) continue;
+
+                    foreach ($seance->getReservations() as $reservation) {
+                        $manager->remove($reservation);
+                    }
+                    foreach ($seance->getSeats() as $seat) {
+                        $manager->remove($seat);
+                    }
+                    $manager->remove($seance);
+                }
             }
 
-            foreach ($film->getSeances() as $seance) {
-                $manager->remove($seance);
-            }
 
+            $manager->remove($film);
+            $manager->flush();
 
+            return $this->redirectToRoute('app_films');
         }
-        $manager->remove($film);
-        $manager->flush();
-        return $this->redirectToRoute('app_films');
+
+        throw $this->createNotFoundException('Film non trouvé.');
     }
+
+
 
 
     //-----------------------------------------------------------------
