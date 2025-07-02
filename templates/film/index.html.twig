@@ -1,10 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Films{% endblock %}
+{% block title %}Terrine Bellecour - Films à l'affiche{% endblock %}
 
 {% block body %}
     <div class="container-fluid min-vh-100 bg-dark text-light p-5 pt-4 position-relative overflow-hidden">
-        <h1 class="mb-4 fs-1 fw-bold text-warning text-center"> Films à l'affiche</h1>
+
+
+        <div class="text-center mb-5 pb-3 border-bottom border-secondary">
+            <h1 class="display-4 fw-bold text-warning"> Terrine Bellecour</h1>
+            <p class="lead text-light mb-1">Le cinéma au cœur de Lyon</p>
+            <p class="small text-secondary mb-0">
+                 24 Rue de la Réalité, 69002 Lyon |  04 78 00 00 00 | ️ contact@terrinebellecour.fr
+            </p>
+        </div>
+
+        <h2 class="mb-4 fs-2 fw-bold text-warning text-center">Films à l'affiche</h2>
 
         <div class="position-relative">
 
@@ -14,7 +24,7 @@
 
             <div class="d-flex overflow-x-auto gap-4 pb-3 px-5">
                 {% for film in films %}
-                    <div class="card bg-black bg-opacity-75 text-light flex-shrink-0" style="width: 18rem; min-width: 18rem;">
+                    <div class="card bg-black bg-opacity-75 text-light flex-shrink-0 shadow-lg" style="width: 18rem; min-width: 18rem;">
                         {% if film.images|length > 0 %}
                             <img src="{{ asset('uploads/images/' ~ film.images[0].imageName) }}" alt="Affiche {{ film.title }}" class="card-img-top rounded-top" style="height: 250px; object-fit: cover;">
                         {% else %}
@@ -28,8 +38,8 @@
                                 <a href="{{ path('app_film_show', {id: film.id}) }}" class="btn btn-sm btn-outline-warning rounded-pill fw-semibold">Voir</a>
 
                                 {% if is_granted('ROLE_ADMIN') %}
-                                <a href="{{ path('app_film_delete', {id: film.id}) }}" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">Supprimer</a>
-                                <a href="{{ path('app_film_edit', {id: film.id}) }}" class="btn btn-sm btn-outline-light rounded-pill fw-semibold">Modifier</a>
+                                    <a href="{{ path('app_film_delete', {id: film.id}) }}" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">Supprimer</a>
+                                    <a href="{{ path('app_film_edit', {id: film.id}) }}" class="btn btn-sm btn-outline-light rounded-pill fw-semibold">Modifier</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -45,12 +55,13 @@
         </div>
 
         {% if is_granted('ROLE_ADMIN') %}
-        <div class="d-flex justify-content-end mt-4 px-5">
-            <a href="{{ path('app_film_create') }}" class="btn btn-warning btn-lg rounded-pill fw-bold px-4">
-                 Créer un nouveau film
-            </a>
-        </div>
+            <div class="d-flex justify-content-end mt-4 px-5">
+                <a href="{{ path('app_film_create') }}" class="btn btn-warning btn-lg rounded-pill fw-bold px-4">
+                    🎥 Créer un nouveau film
+                </a>
+            </div>
         {% endif %}
+
     </div>
 {% endblock %}
 
