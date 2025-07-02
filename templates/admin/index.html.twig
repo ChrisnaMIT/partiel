@@ -1,54 +1,72 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="min-h-screen bg-gray-100 p-6">
-        <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
-            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Tous les utilisateurs</h1>
+    <div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white text-center">
+                <h2 class="mb-0">Gestion des utilisateurs</h2>
+            </div>
+            <div class="card-body">
 
-            {% for user in users %}
-                <div class="bg-blue-50 rounded-xl p-4 mb-4 shadow-sm">
-                    <div class="text-sm font-medium text-gray-600 mb-2">
-                        {% for role in user.roles %}
-                            {% if role == 'ROLE_USER' %}
-                                <span class="text-blue-700">User</span>
-                            {% elseif role == 'ROLE_ADMIN' %}
-                                <span class="text-red-600">Admin</span>
-                            {% elseif role == 'ROLE_EMPLOYER' %}
-                                <span class="text-green-600">Employer</span>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                {% if users is not empty %}
+                    {% for user in users %}
+                        <div class="card mb-4 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <h5 class="card-title mb-1">{{ user.email }}</h5>
+                                        <p class="card-text mb-0">
+                                            {% for role in user.roles %}
+                                                {% if role == 'ROLE_ADMIN' %}
+                                                    <span class="badge bg-danger">Admin</span>
+                                                {% elseif role == 'ROLE_EMPLOYER' %}
+                                                    <span class="badge bg-success">Employer</span>
+                                                {% elseif role == 'ROLE_USER' %}
+                                                    <span class="badge bg-primary">User</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </p>
+                                        {% if user == app.user %}
+                                            <small class="text-muted">C'est toi</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
 
-                    {% if user == app.user %}
-                        <p class="text-xs text-purple-600 font-semibold">C'est toi</p>
-                    {% endif %}
+                                <div class="row g-2">
+                                    <div class="col-6 col-md-3">
+                                        <form method="post" action="{{ path('app_promote_admin', {id: user.id}) }}">
+                                            <button type="submit" class="btn btn-danger w-100">Promote Admin</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <form method="post" action="{{ path('app_demote_admin', {id: user.id}) }}">
+                                            <button type="submit" class="btn btn-outline-danger w-100">Demote Admin</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <form method="post" action="{{ path('app_promote_employer', {id: user.id}) }}">
+                                            <button type="submit" class="btn btn-success w-100">Promote Employer</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <form method="post" action="{{ path('app_demote_employer', {id: user.id}) }}">
+                                            <button type="submit" class="btn btn-outline-success w-100">Demote Employer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center text-muted">Aucun utilisateur trouvé.</p>
+                {% endif %}
 
-                    <p class="text-gray-700 font-semibold">C'est moi : {{ user.email }}</p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
-                        <form method="post" action="{{ path('app_promote_admin', {id: user.id}) }}">
-                            <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Promote Admin</button>
-                        </form>
-                        <form method="post" action="{{ path('app_demote_admin', {id: user.id}) }}">
-                            <button type="submit" class="w-full bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200 transition">Demote Admin</button>
-                        </form>
-
-                        <form method="post" action="{{ path('app_promote_employer', {id: user.id}) }}">
-                            <button type="submit" class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Promote Employer</button>
-                        </form>
-                        <form method="post" action="{{ path('app_demote_employer', {id: user.id}) }}">
-                            <button type="submit" class="w-full bg-green-100 text-green-700 px-4 py-2 rounded hover:bg-green-200 transition">Demote Employer</button>
-                        </form>
-                    </div>
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_films') }}" class="btn btn-secondary">Retour à l'accueil</a>
                 </div>
-            {% else %}
-                <p class="text-center text-gray-500">Aucun utilisateur trouvé.</p>
-            {% endfor %}
-
-            <div class="text-center mt-6">
-                <a href="{{ path('app_admin') }}" class="inline-block bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition">Retour</a>
             </div>
         </div>
     </div>
 {% endblock %}
+
 

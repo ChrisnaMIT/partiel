@@ -89,10 +89,22 @@ final class FilmController extends AbstractController
         if (!$film) {
             throw $this->createNotFoundException('Film introuvable.');
         }
+
+        // Tri des séances par date croissante
+        $seances = $film->getSeances()->toArray();
+        usort($seances, function ($a, $b) {
+            if (!$a->getDate() || !$b->getDate()) {
+                return 0; // en cas de date manquante, laisse l'ordre inchangé
+            }
+            return $a->getDate() <=> $b->getDate();
+        });
+
         return $this->render('film/show.html.twig', [
             'film' => $film,
+            'seances' => $seances, // On passe les séances triées séparément
         ]);
     }
+
 
 
     //-----------------------------------------------------------------

@@ -3,44 +3,44 @@
 {% block title %}Séances{% endblock %}
 
 {% block body %}
-    <div class="container-fluid min-vh-100 bg-dark text-light p-5 pt-4">
-        <h1 class="mb-4 fs-1 fw-bold text-warning text-center"> Toutes les séances</h1>
+    <div class="container-fluid min-vh-100 bg-dark text-light p-5">
+        <h1 class="mb-4 fs-1 fw-bold text-warning text-center">Toutes les séances</h1>
 
-        <div class="table-responsive rounded shadow">
-            <table class="table table-dark table-hover table-borderless align-middle mb-0">
-                <thead class="text-warning border-bottom border-secondary">
+        <div class="table-responsive rounded shadow overflow-hidden">
+            <table class="table table-dark table-striped table-hover align-middle mb-0 border border-secondary">
+                <thead class="bg-black text-warning border-bottom border-secondary">
                 <tr class="text-center">
-                    <th>Titre de la séance</th>
-                    <th>Date</th>
-                    <th>Heure</th>
-                    <th>Film</th>
-                    <th>Salle</th>
-                    <th>Catégorie</th>
-                    <th>Actions</th>
+                    <th scope="col">Titre de la séance</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Heure</th>
+                    <th scope="col">Film</th>
+                    <th scope="col">Salle</th>
+                    <th scope="col">Catégorie</th>
+                    <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for seance in seances %}
-                    <tr class="text-center">
+                    <tr class="text-center border-top border-secondary">
                         <td class="fw-semibold">{{ seance.title }}</td>
                         <td>{{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}</td>
                         <td>{{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}</td>
-                        <td class="text-warning">{{ seance.film.title }}</td>
+                        <td class="text-warning fw-bold">{{ seance.film.title }}</td>
                         <td>{{ seance.salle ? seance.salle.numbre : 'Non définie' }}</td>
-                        {% if seance.category %}
-                            <span class="badge bg-secondary">{{ seance.category.title }}</span>
-                        {% else %}
-                            <span class="text-muted">Aucune</span>
-                        {% endif %}
-
-                        <td class="d-flex justify-content-center gap-2">
-                            <a href="{{ path('app_film_show', { id: seance.film.id }) }}" class="btn btn-outline-warning btn-sm fw-bold">Voir</a>
+                        <td>
+                            {% if seance.category %}
+                                <span class="badge rounded-pill bg-secondary">{{ seance.category.title }}</span>
+                            {% else %}
+                                <span class="text-muted">Aucune</span>
+                            {% endif %}
+                        </td>
+                        <td class="d-flex justify-content-center gap-2 flex-wrap">
+                            <a href="{{ path('app_film_show', { id: seance.film.id }) }}" class="btn btn-sm btn-outline-warning fw-bold">Voir</a>
 
                             {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_seance_edit', {id: seance.id}) }}" class="btn btn-sm btn-outline-light rounded-pill fw-semibold">Modifier</a>
-                            <a href="{{ path('app_seance_delete', {id: seance.id}) }}" class="btn btn-sm btn-outline-light rounded-pill fw-semibold">Supprimer</a>
+                                <a href="{{ path('app_seance_edit', {id: seance.id}) }}" class="btn btn-sm btn-outline-light fw-semibold">Modifier</a>
+                                <a href="{{ path('app_seance_delete', {id: seance.id}) }}" class="btn btn-sm btn-outline-danger fw-semibold">Supprimer</a>
                             {% endif %}
-
                         </td>
                     </tr>
                 {% else %}
@@ -53,11 +53,12 @@
         </div>
 
         {% if is_granted('ROLE_ADMIN') %}
-        <div class="d-flex justify-content-end mt-4">
-            <a href="{{ path('app_seance_create') }}" class="btn btn-success btn-lg rounded-pill fw-bold px-4">
-                 Créer une nouvelle séance
-            </a>
-        </div>
+            <div class="d-flex justify-content-end mt-4">
+                <a href="{{ path('app_seance_create') }}" class="btn btn-success btn-lg rounded-pill fw-bold px-4 shadow-sm">
+                    <i class="bi bi-plus-circle"></i> Créer une nouvelle séance
+                </a>
+            </div>
         {% endif %}
     </div>
 {% endblock %}
+

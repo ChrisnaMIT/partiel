@@ -3,52 +3,58 @@
 {% block title %}Réservation au guichet{% endblock %}
 
 {% block body %}
-    <h1 class="text-center text-warning mb-4">Réservation pour {{ seance.film.title }}</h1>
+    <div class="container-fluid min-vh-100 bg-dark text-light p-5">
+        <h1 class="text-center text-warning mb-4 fw-bold">
+            Réservation pour <span class="text-uppercase">{{ seance.film.title }}</span>
+        </h1>
 
-    <div class="d-flex flex-column align-items-center gap-2">
-        {% for row in seats|batch(16, '') %}
-            <div class="d-flex gap-1 justify-content-center">
-                {% for seat in row %}
-                    {% if seat %}
-                        {% set isReserved = seat.id in reservedSeatIds %}
-                        <div
-                            class="seat text-white fw-bold d-flex justify-content-center align-items-center"
-                            data-seat-id="{{ seat.id }}"
-                            data-disabled="{{ isReserved ? 'true' : 'false' }}"
-                            style="
-                                width:40px; height:40px; border-radius:5px;
-                                background-color: {{ isReserved ? '#dc3545' : '#6c757d' }};
-                                cursor: {{ isReserved ? 'not-allowed' : 'pointer' }};
-                                "
-                        >
-                            {{ seat.number }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endfor %}
-        <button class="btn btn-success mt-4 d-block mx-auto" id="confirm-reservation">Confirmer la réservation</button>
+        <div class="d-flex flex-column align-items-center gap-2">
+            {% for row in seats|batch(16, '') %}
+                <div class="d-flex gap-2 justify-content-center">
+                    {% for seat in row %}
+                        {% if seat %}
+                            {% set isReserved = seat.id in reservedSeatIds %}
+                            <div
+                                class="seat d-flex justify-content-center align-items-center fw-semibold shadow-sm"
+                                data-seat-id="{{ seat.id }}"
+                                data-disabled="{{ isReserved ? 'true' : 'false' }}"
+                                style="
+                                    width: 42px; height: 42px; border-radius: 8px;
+                                    background-color: {{ isReserved ? '#dc3545' : '#6c757d' }};
+                                    color: white;
+                                    cursor: {{ isReserved ? 'not-allowed' : 'pointer' }};
+                                    user-select: none;
+                                    transition: transform 0.1s, background-color 0.2s;
+                                    "
+                            >
+                                {{ seat.number }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button class="btn btn-success btn-lg rounded-pill fw-bold mt-4 shadow" id="confirm-reservation">
+                Confirmer la réservation
+            </button>
+        </div>
     </div>
-
 
     <script>
         document.querySelectorAll('.seat').forEach(seat => {
             if (seat.dataset.disabled === 'false') {
                 seat.addEventListener('click', () => {
-                    if (seat.style.backgroundColor === 'blue') {
-
-                        seat.style.backgroundColor = '#6c757d';
-                    } else {
-
-                        seat.style.backgroundColor = 'blue';
-                    }
+                    const selected = seat.classList.contains('bg-primary');
+                    seat.classList.toggle('bg-primary', !selected);
+                    seat.style.backgroundColor = selected ? '#6c757d' : '#0d6efd';
+                    seat.style.transform = selected ? 'scale(1)' : 'scale(1.1)';
                 });
             }
         });
 
         document.getElementById('confirm-reservation').addEventListener('click', () => {
             const selectedSeats = Array.from(document.querySelectorAll('.seat'))
-                .filter(seat => seat.style.backgroundColor === 'blue')
+                .filter(seat => seat.style.backgroundColor === 'rgb(13, 110, 253)') // blue Bootstrap color
                 .map(seat => seat.dataset.seatId);
 
             if (selectedSeats.length === 0) {
@@ -75,6 +81,6 @@
                     alert("Erreur");
                 });
         });
-
     </script>
 {% endblock %}
+

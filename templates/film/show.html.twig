@@ -6,7 +6,7 @@
     <div class="container-fluid min-vh-100 bg-dark text-light p-5 pt-4">
         <div class="mx-auto" style="max-width: 900px;">
 
-            <h1 class="mb-4 fs-1 fw-bold text-warning text-center"> {{ film.title }}</h1>
+            <h1 class="mb-4 fs-1 fw-bold text-warning text-center">{{ film.title }}</h1>
 
             {% if film.images|length > 0 %}
                 <div class="row g-4 justify-content-center mb-5">
@@ -23,29 +23,30 @@
                 <p class="fs-5"><span class="fw-bold text-warning">Description :</span> {{ film.description }}</p>
             </div>
 
-
             {% if film.seances|length > 0 %}
-                <h2 class="fs-3 fw-bold text-warning text-center mb-4"> Séances disponibles</h2>
-                <div class="d-flex flex-column gap-4">
-                    {% for seance in film.seances %}
-                        <div class="bg-black bg-opacity-75 rounded-4 shadow p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                            <div class="mb-3 mb-md-0">
-                                <p class="mb-1 fs-5"><span class="fw-bold text-warning">Date :</span> {{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}</p>
-                                <p class="mb-1 fs-5"><span class="fw-bold text-warning">Heure :</span> {{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}</p>
-                                <p class="mb-0 fs-5"><span class="fw-bold text-warning">Salle :</span> {{ seance.salle ? seance.salle.numbre : 'Non définie' }}</p>
-                                <p class="mb-1">
-                                    <strong class="text-warning">Catégorie :</strong>
-                                    {% if seance.category %}
-                                        <span class="badge bg-warning text-dark fw-bold">{{ seance.category.title }}</span>
-                                    {% else %}
-                                        <span class="text-muted">Aucune</span>
-                                    {% endif %}
-                                </p>
+                <h2 class="fs-3 fw-bold text-warning text-center mb-4">Séances disponibles</h2>
 
+                <div class="overflow-auto pb-4">
+                    <div class="d-flex gap-4 flex-nowrap" style="scroll-snap-type: x mandatory;">
+                        {% for seance in seances %}
+                            <div class="bg-black bg-opacity-75 rounded-4 shadow p-4 flex-shrink-0" style="width: 300px; scroll-snap-align: start;">
+                                <div class="mb-3">
+                                    <p class="mb-1 fs-5"><span class="fw-bold text-warning">Date :</span> {{ seance.date ? seance.date|date('d/m/Y') : 'Non définie' }}</p>
+                                    <p class="mb-1 fs-5"><span class="fw-bold text-warning">Heure :</span> {{ seance.startTime ? seance.startTime|date('H:i') : 'Non définie' }}</p>
+                                    <p class="mb-1 fs-5"><span class="fw-bold text-warning">Salle :</span> {{ seance.salle ? seance.salle.numbre : 'Non définie' }}</p>
+                                    <p class="mb-1">
+                                        <strong class="text-warning">Catégorie :</strong>
+                                        {% if seance.category %}
+                                            <span class="badge bg-warning text-dark fw-bold">{{ seance.category.title }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Aucune</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <a href="{{ path('app_reservation_select_seats', { id: seance.id }) }}" class="btn btn-outline-success btn-lg rounded-pill fw-bold w-100">Réserver</a>
                             </div>
-                            <a href="{{ path('app_reservation_select_seats', { id: seance.id }) }}" class="btn btn-outline-success btn-lg rounded-pill fw-bold px-4"> Réserver</a>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             {% else %}
                 <p class="mt-5 text-center text-muted fs-5">Aucune séance programmée pour ce film.</p>
@@ -53,11 +54,12 @@
 
             <div class="d-flex justify-content-center gap-4 mt-5">
                 {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_film_delete', {id: film.id}) }}" class="btn btn-outline-danger btn-lg rounded-pill fw-bold px-4">Supprimer</a>
-                <a href="{{ path('app_film_edit', {id: film.id}) }}" class="btn btn-outline-warning btn-lg rounded-pill fw-bold px-4">Modifier</a>
+                    <a href="{{ path('app_film_delete', {id: film.id}) }}" class="btn btn-outline-danger btn-lg rounded-pill fw-bold px-4">Supprimer</a>
+                    <a href="{{ path('app_film_edit', {id: film.id}) }}" class="btn btn-outline-warning btn-lg rounded-pill fw-bold px-4">Modifier</a>
                 {% endif %}
-                <a href="{{ path('app_films') }}" class="btn btn-outline-light btn-lg rounded-pill fw-semibold px-4"> Retour à la liste</a>
+                <a href="{{ path('app_films') }}" class="btn btn-outline-light btn-lg rounded-pill fw-semibold px-4">Retour à la liste</a>
             </div>
         </div>
     </div>
 {% endblock %}
+
